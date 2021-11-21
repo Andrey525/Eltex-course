@@ -1,0 +1,8 @@
+*
+!.gitignore
+!README.md
+!Makefile
+!*.sh
+!*.c
+!*.h
+!homework1
