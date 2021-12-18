@@ -5,4 +5,6 @@
 !*.sh
 !*.c
 !*.h
+!src
 !homework1
+!static_lib
