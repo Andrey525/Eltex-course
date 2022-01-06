@@ -3,17 +3,31 @@ CFLAGS := -Wall -Werror -c -fPIC
 LDFLAGS :=
 SOURCES := src/sum.c src/subtraction.c src/multiplication.c src/division.c
 OBJECTS := build/sum.o build/subtraction.o build/multiplication.o build/division.o
+LIBRARIES := lib/libsum.so lib/libsubtraction.so lib/libmultiplication.so lib/libdivision.so
 TARGET := bin/calc
 
 .PHONY: all clean install uninstall
 
 all: bin build lib $(TARGET)
 
-$(TARGET): build/main.o lib/libcalc.so
+$(TARGET): build/main.o $(LIBRARIES)
 	$(CC) build/main.o -o $(TARGET) -ldl
 
-lib/libcalc.so: $(OBJECTS)
-	$(CC) -shared $(OBJECTS) -o $@
+##########################################
+
+lib/libsum.so: build/sum.o
+	$(CC) -shared $< -o $@
+
+lib/libsubtraction.so: build/subtraction.o
+	$(CC) -shared $< -o $@
+
+lib/libmultiplication.so: build/multiplication.o
+	$(CC) -shared $< -o $@
+
+lib/libdivision.so: build/division.o
+	$(CC) -shared $< -o $@
+
+##########################################
 
 build/main.o: src/main.c src/calculator.h
 	$(CC) $(CFLAGS) $< -o $@
@@ -29,6 +43,8 @@ build/multiplication.o: src/multiplication.c src/calculator.h
 
 build/division.o: src/division.c src/calculator.h
 	$(CC) $(CFLAGS) $< -o $@
+	
+###########################################
 
 bin:
 	mkdir bin
