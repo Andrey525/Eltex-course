@@ -10,7 +10,7 @@ TARGET := bin/calc
 all: bin build lib $(TARGET)
 
 $(TARGET): build/main.o lib/libcalc.so
-	$(CC) build/main.o -L./lib -lcalc -o $(TARGET) -Wl,-rpath,./lib
+	$(CC) build/main.o -o $(TARGET) -ldl
 
 lib/libcalc.so: $(OBJECTS)
 	$(CC) -shared $(OBJECTS) -o $@
