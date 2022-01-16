@@ -10,3 +10,4 @@
 !static_lib
 !shared_lib
 !shared_lib_dl
+!file_read_write
