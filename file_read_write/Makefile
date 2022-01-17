@@ -1,4 +1,4 @@
-all: bin bin/prog1 bin/prog2 
+all: bin bin/prog1 bin/prog2 bin/prog3
 
 bin/prog1: src/main1.c
 	gcc -Wall -Werror src/main1.c -o $@

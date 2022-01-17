@@ -8,9 +8,10 @@ int main() {
   int fd;
   char *buf = malloc(sizeof(char) * 256);
   strcpy(buf, "Some string");
-  fd = open("file.txt", O_CREAT | O_EXCL | O_WRONLY, S_IRUSR | S_IWUSR);
+  fd = open("file.txt", O_CREAT | O_EXCL | O_WRONLY,
+            S_IRUSR | S_IWUSR | S_IXUSR);
   if (fd == -1) {
-    fd = open("file.txt", O_WRONLY | O_TRUNC, S_IRUSR);
+    fd = open("file.txt", O_WRONLY | O_TRUNC, 00700);
     if (fd == -1) {
       perror("File opening error");
       return -1;
