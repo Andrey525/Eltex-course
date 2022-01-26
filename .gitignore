@@ -11,3 +11,5 @@
 !shared_lib
 !shared_lib_dl
 !file_read_write
+!text_editor
+!fork
