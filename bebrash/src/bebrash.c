@@ -166,18 +166,18 @@ int bebrash_execute(char **tokens) {
 
 int bebrash_num_builtins() { return sizeof(builtin_str) / sizeof(char *); }
 
-int bebrash_cd(char **args) {
-  if (args[1] == NULL) {
+int bebrash_cd(char **tokens) {
+  if (tokens[1] == NULL) {
     fprintf(stderr, "bebrash: ожидается аргумент для \"cd\"\n");
   } else {
-    if (chdir(args[1]) != 0) {
+    if (chdir(tokens[1]) != 0) {
       perror("bebrash");
     }
   }
   return 1;
 }
 
-int bebrash_help(char **args) {
+int bebrash_help(char **tokens) {
   int i;
   printf("Наберите название программы и её аргументы и нажмите enter.\n");
   printf("Вот список встроенных команд:\n");
@@ -190,4 +190,4 @@ int bebrash_help(char **args) {
   return 1;
 }
 
-int bebrash_exit(char **args) { return 0; }
+int bebrash_exit(char **tokens) { return 0; }

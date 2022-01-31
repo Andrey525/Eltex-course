@@ -13,8 +13,8 @@ char **bebrash_split_command(char *command);
 int bebrash_execute(char **tokens);
 int bebrash_launch(char ***tokens, int count_commands);
 
-int bebrash_cd(char **args);
-int bebrash_help(char **args);
-int bebrash_exit(char **args);
+int bebrash_cd(char **tokens);
+int bebrash_help(char **tokens);
+int bebrash_exit(char **tokens);
 
 int bebrash_num_builtins();
