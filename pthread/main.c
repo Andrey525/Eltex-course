@@ -54,6 +54,7 @@ int main() {
         }
     }
     printf("Rezult A = %d\n", A);
-
+    free(thread);
+    free(data);
     return 0;
 }
