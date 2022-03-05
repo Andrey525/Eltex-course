@@ -66,11 +66,10 @@ int main() {
         memset(recv_buf, 0, sizeof(recv_buf));
         printf("Enter message (if you want to exit, enter \"exit\" without "
                "quotes):\n");
-        fgets(send_buf, MSG_SIZE - 2, stdin);
+        fgets(send_buf, MSG_SIZE, stdin);
         if (send_buf[strlen(send_buf) - 1] == '\n') {
             send_buf[strlen(send_buf) - 1] = '\0';
         } else {
-            send_buf[MSG_SIZE - 1] = '\0';
             clear_stdin();
         }
         if (strcmp(send_buf, "exit") == 0) {

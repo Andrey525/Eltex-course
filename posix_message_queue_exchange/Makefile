@@ -1,7 +1,7 @@
 all: client server
 
 client: client.c
-	gcc -Wall -Werror $< -o $@ -lrt
+	gcc -Wall -Werror $< -o $@ -lrt -g
 
 server: server.c
 	gcc -Wall -Werror $< -o $@ -lrt
