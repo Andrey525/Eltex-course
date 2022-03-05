@@ -4,5 +4,7 @@ lib
 prog
 client
 server
+signal_send
+signal_recv
 *.txt
 !report.txt

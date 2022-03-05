@@ -8,7 +8,7 @@
             "name": "(gdb) Запустить",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/systemV_message_exchange/server",
+            "program": "${workspaceFolder}/signal/signal_send",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
