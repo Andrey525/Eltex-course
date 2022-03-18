@@ -1,10 +1,13 @@
 all: bin build bin/prog
 
-bin/prog: build/main.o
-	gcc build/main.o -o bin/prog -lncurses
+bin/prog: build/Main.o build/Gui.o
+	g++ -no-pie $^ -o bin/prog -lsfml-graphics -lsfml-window -lsfml-network -lsfml-system -lsfml-audio -ltgui
 
-build/main.o: src/main.c
-	gcc -Wall -Werror -c src/main.c -o build/main.o
+build/Main.o: src/Main.cpp src/Gui.hpp
+	g++ -Wall -Werror -c src/Main.cpp -o $@
+
+build/Gui.o: src/Gui.cpp src/Gui.hpp
+	g++ -Wall -Werror -c src/Gui.cpp -o $@
 
 bin:
 	mkdir bin
