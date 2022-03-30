@@ -11,7 +11,8 @@ int main() {
     int listening_socket, exchanging_socket;
     struct sockaddr_in server_addr, client_addr;
     socklen_t length;
-    int bytes_send;
+    int bytes_send, bytes_recv;
+    int n;
     time_t sys_time;
     struct tm *date;
 
@@ -55,6 +56,11 @@ int main() {
         printf("SERVER: Client address: %s:%d\n",
                inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));
         while (1) {
+            bytes_recv = recv(exchanging_socket, &n, sizeof(int), 0);
+            if (bytes_recv <= 0) {
+                // perror("SERVER: recv");
+                break;
+            }
             sys_time = time(NULL);
             date = localtime(&sys_time);
             date->tm_year += 1900;
