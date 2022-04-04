@@ -5,7 +5,7 @@
 all: bin bin/$(SERVER) bin/$(CLIENT)
 
 bin/$(SERVER): src/$(SERVER).c
-	gcc -Wall -Werror $< -o $@ -lpthread
+	gcc -Wall -Werror $< -o $@ -lpthread -g
 
 bin/$(CLIENT): src/$(CLIENT).c
 	gcc -Wall -Werror $< -o $@

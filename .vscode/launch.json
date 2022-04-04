@@ -8,7 +8,7 @@
             "name": "(gdb) Запустить",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/text_editor/bin/prog",
+            "program": "${workspaceFolder}/server_diagrams/bin/pthread_pool_server_tcp",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/text_editor",
