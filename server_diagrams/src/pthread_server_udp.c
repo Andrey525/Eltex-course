@@ -10,21 +10,21 @@
 
 typedef struct {
     struct sockaddr_in client_addr;
-    int exchanging_socket;
 } PthreadData;
 
 pthread_mutex_t MUTEX = PTHREAD_MUTEX_INITIALIZER;
 
 void *process(void *input_thread_data) {
-    struct sockaddr_in client_addr;
+    struct sockaddr_in server_addr, client_addr;
     int exchanging_socket;
-    int bytes_send;
+    int bytes_send, bytes_recv;
     time_t sys_time;
     struct tm *date;
+    socklen_t length;
+    int n;
 
     PthreadData *thread_data = (PthreadData *)input_thread_data;
     client_addr = thread_data->client_addr;
-    exchanging_socket = thread_data->exchanging_socket;
 
     if (pthread_mutex_unlock(&MUTEX) != 0) {
         perror("SERVER: pthread_mutex_unlock");
@@ -33,15 +33,61 @@ void *process(void *input_thread_data) {
 
     printf("SERVER: Client address: %s:%d\n", inet_ntoa(client_addr.sin_addr),
            ntohs(client_addr.sin_port));
-    sys_time = time(NULL);
-    date = localtime(&sys_time);
-    date->tm_year += 1900;
+
+    exchanging_socket = socket(AF_INET, SOCK_DGRAM, 0);
+    if (exchanging_socket == -1) {
+        perror("SERVER: socket");
+        exit(1);
+    }
+
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port = 0;
+
+    if (bind(exchanging_socket, (struct sockaddr *)(&server_addr),
+             sizeof(struct sockaddr)) == -1) {
+        perror("SERVER: bind");
+        exit(1);
+    }
+
+    length = sizeof(struct sockaddr_in);
+    if (getsockname(exchanging_socket, (struct sockaddr *)(&server_addr),
+                    &length) < 0) {
+        perror("SERVER: getsockname");
+        exit(1);
+    }
+    printf("SUBSERVER: port number - %d\n", ntohs(server_addr.sin_port));
     bytes_send =
-        sendto(exchanging_socket, date, sizeof(struct tm), 0,
+        sendto(exchanging_socket, &server_addr.sin_port, sizeof(in_port_t), 0,
                (struct sockaddr *)(&client_addr), sizeof(struct sockaddr_in));
     if (bytes_send <= 0) {
-        perror("SERVER: sendto");
+        perror("SUBSERVER: sendto");
         exit(1);
+    }
+
+    ///
+    while (1) {
+        length = sizeof(struct sockaddr_in);
+        bytes_recv = recvfrom(exchanging_socket, &n, sizeof(int), 0,
+                              (struct sockaddr *)(&client_addr), &length);
+        if (bytes_recv <= 0) {
+            perror("SERVER: recvfrom");
+            exit(1);
+        }
+        if (n) {
+            sys_time = time(NULL);
+            date = localtime(&sys_time);
+            date->tm_year += 1900;
+            bytes_send = sendto(exchanging_socket, date, sizeof(struct tm), 0,
+                                (struct sockaddr *)(&client_addr),
+                                sizeof(struct sockaddr_in));
+            if (bytes_send <= 0) {
+                perror("SERVER: sendto");
+                exit(1);
+            }
+        } else {
+            break;
+        }
     }
     pthread_exit(NULL);
 }
@@ -54,7 +100,7 @@ int main() {
     PthreadData thread_data;
 
     int bytes_recv;
-    int n;
+    int start;
 
     exchanging_socket = socket(AF_INET, SOCK_DGRAM, 0);
     if (exchanging_socket == -1) {
@@ -82,7 +128,7 @@ int main() {
 
     while (1) {
         length = sizeof(struct sockaddr_in);
-        bytes_recv = recvfrom(exchanging_socket, &n, sizeof(int), 0,
+        bytes_recv = recvfrom(exchanging_socket, &start, sizeof(int), 0,
                               (struct sockaddr *)(&client_addr), &length);
         if (bytes_recv <= 0) {
             perror("SERVER: recvfrom");
@@ -94,7 +140,6 @@ int main() {
             exit(1);
         }
         thread_data.client_addr = client_addr;
-        thread_data.exchanging_socket = exchanging_socket;
 
         if (pthread_create(&thread, NULL, process, &thread_data) != 0) {
             perror("SERVER: pthread_create");

@@ -12,7 +12,6 @@
 
 typedef struct {
     int exchanging_socket;
-    struct sockaddr_in client_addr;
 } PthreadData;
 
 pthread_mutex_t MUTEX = PTHREAD_MUTEX_INITIALIZER;
@@ -35,6 +34,7 @@ void *process(void *number) {
     struct sockaddr_in client_addr;
     int exchanging_socket;
     int n;
+    socklen_t length;
 
     thread_num = *(int *)number;
     printf("NUMBER = %d\n", thread_num);
@@ -49,13 +49,18 @@ void *process(void *number) {
             sleep(1);
             continue;
         }
-        printf("NOW HERE\n");
-        client_addr = thread_data[thread_num].client_addr;
         exchanging_socket = thread_data[thread_num].exchanging_socket;
         flag[thread_num] = 0;
 
         if (pthread_mutex_unlock(&MUTEX) != 0) {
             perror("SERVER: pthread_mutex_unlock");
+            exit(1);
+        }
+
+        length = sizeof(struct sockaddr_in);
+        if (getsockname(exchanging_socket, (struct sockaddr *)(&client_addr),
+                        &length) < 0) {
+            perror("SERVER: getsockname");
             exit(1);
         }
 
@@ -155,7 +160,6 @@ int main() {
             }
             if (pthread_mutex_trylock(&MUTEX) == 0) {
                 if (flag[i] == -1) {
-                    thread_data[i].client_addr = client_addr;
                     thread_data[i].exchanging_socket = exchanging_socket;
                     flag[i] = 1;
                     printf("MAIN i = %d\n", i);

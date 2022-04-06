@@ -10,7 +10,6 @@
 
 typedef struct {
     int exchanging_socket;
-    struct sockaddr_in client_addr;
 } PthreadData;
 
 pthread_mutex_t MUTEX = PTHREAD_MUTEX_INITIALIZER;
@@ -22,18 +21,25 @@ void *process(void *input_thread_data) {
     struct sockaddr_in client_addr;
     int exchanging_socket;
     int n;
+    socklen_t length;
 
     PthreadData *thread_data = (PthreadData *)input_thread_data;
-    client_addr = thread_data->client_addr;
     exchanging_socket = thread_data->exchanging_socket;
-
     if (pthread_mutex_unlock(&MUTEX) != 0) {
         perror("SERVER: pthread_mutex_unlock");
         exit(1);
     }
 
+    length = sizeof(struct sockaddr_in);
+    if (getsockname(exchanging_socket, (struct sockaddr *)(&client_addr),
+                    &length) < 0) {
+        perror("SERVER: getsockname");
+        exit(1);
+    }
+
     printf("SERVER: Client address: %s:%d\n", inet_ntoa(client_addr.sin_addr),
            ntohs(client_addr.sin_port));
+
     while (1) {
         bytes_recv = recv(exchanging_socket, &n, sizeof(int), 0);
         if (bytes_recv <= 0) {
@@ -102,7 +108,6 @@ int main() {
             perror("SERVER: pthread_mutex_lock");
             exit(1);
         }
-        thread_data.client_addr = client_addr;
         thread_data.exchanging_socket = exchanging_socket;
 
         if (pthread_create(&thread, NULL, process, &thread_data) != 0) {

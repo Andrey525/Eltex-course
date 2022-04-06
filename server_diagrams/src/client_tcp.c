@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
         perror("CLIENT: connect");
         exit(1);
     }
-    printf("CLIENT: Is ready for exhcanging\n");
+    printf("CLIENT: Is ready for exchanging\n");
     for (int i = 0; i < 5; i++) {
         bytes_send = send(exchange_socket, &n, sizeof(int), 0);
         if (bytes_send <= 0) {
