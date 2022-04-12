@@ -18,12 +18,12 @@ int main() {
     }
 
     multicast_addr.sin_family = AF_INET;
-    multicast_addr.sin_addr.s_addr = htonl(inet_addr("224.0.0.1"));
+    multicast_addr.sin_addr.s_addr = inet_addr("224.0.0.1");
     multicast_addr.sin_port = htons(4774);
 
-    bytes_send =
-        sendto(multicast_socket, &n, sizeof(int), 0,
-               (struct sockaddr *)(&multicast_addr), sizeof(struct sockaddr));
+    bytes_send = sendto(multicast_socket, &n, sizeof(int), 0,
+                        (struct sockaddr *)(&multicast_addr),
+                        sizeof(struct sockaddr_in));
 
     if (bytes_send <= 0) {
         perror("SERVER: sendto");

@@ -1,4 +1,5 @@
 #include <arpa/inet.h>
+#include <memory.h>
 #include <netinet/in.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +21,7 @@ int main() {
     }
 
     addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    addr.sin_addr.s_addr = INADDR_ANY;
     addr.sin_port = htons(4774);
 
     if (bind(multicast_socket, (struct sockaddr *)(&addr), sizeof(addr)) ==
@@ -28,9 +29,9 @@ int main() {
         perror("CLIENT: bind");
         exit(1);
     }
-
+    memset(&mreq, 0, sizeof(struct ip_mreqn));
     mreq.imr_multiaddr.s_addr = inet_addr("224.0.0.1");
-    mreq.imr_address.s_addr = htonl(INADDR_ANY);
+    mreq.imr_address.s_addr = INADDR_ANY;
 
     if (setsockopt(multicast_socket, IPPROTO_IP, IP_ADD_MEMBERSHIP, &mreq,
                    sizeof(struct ip_mreqn)) == -1) {
