@@ -50,8 +50,8 @@ int main(int argc, char *argv[]) {
     server_addr.sll_family = AF_PACKET;
     server_addr.sll_protocol = htons(ETH_P_ALL);
     server_addr.sll_ifindex = if_nametoindex("enp3s0");
-    server_addr.sll_hatype = ARPHRD_ETHER;
-    server_addr.sll_pkttype = PACKET_HOST;
+    // server_addr.sll_hatype = ARPHRD_ETHER;
+    // server_addr.sll_pkttype = PACKET_HOST;
     server_addr.sll_halen = ETH_ALEN;
     server_addr.sll_addr[0] = 0xd8;
     server_addr.sll_addr[1] = 0x5e;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[]) {
     packet.eth_header.h_dest[3] = 0xc1;
     packet.eth_header.h_dest[4] = 0x45;
     packet.eth_header.h_dest[5] = 0x9d;
-    packet.eth_header.h_proto = 123; // id любое
+    packet.eth_header.h_proto = ETH_P_802_3;
     memcpy(packet.eth_header.h_source, server_addr.sll_addr, ETH_ALEN);
 
     packet.ip_header.version = 4;

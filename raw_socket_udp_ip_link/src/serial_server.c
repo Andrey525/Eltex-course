@@ -21,8 +21,8 @@ int main() {
     }
     memset(&server_addr, 0, sizeof(struct sockaddr_in));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = inet_addr("192.168.0.4");
-    server_addr.sin_port = 0;
+    server_addr.sin_addr.s_addr = inet_addr("192.168.0.104");
+    server_addr.sin_port = htons(7070);
 
     if (bind(exchanging_socket, (struct sockaddr *)(&server_addr),
              sizeof(struct sockaddr_in)) == -1) {
@@ -30,12 +30,6 @@ int main() {
         exit(1);
     }
 
-    length = sizeof(struct sockaddr_in);
-    if (getsockname(exchanging_socket, (struct sockaddr *)(&server_addr),
-                    &length) < 0) {
-        perror("SERVER: getsockname");
-        exit(1);
-    }
     printf("SERVER: port number - %d, ip - %s\n", ntohs(server_addr.sin_port),
            inet_ntoa(server_addr.sin_addr));
 
