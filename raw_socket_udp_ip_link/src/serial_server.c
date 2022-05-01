@@ -21,7 +21,7 @@ int main() {
     }
     memset(&server_addr, 0, sizeof(struct sockaddr_in));
     server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    server_addr.sin_addr.s_addr = inet_addr("192.168.0.4");
     server_addr.sin_port = 0;
 
     if (bind(exchanging_socket, (struct sockaddr *)(&server_addr),
