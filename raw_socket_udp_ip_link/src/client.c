@@ -20,6 +20,17 @@ struct Packet {
     char mes[256];
 };
 
+uint16_t checksum(struct iphdr iphdr) {
+    int csum = 0;
+    int *ptr = (int *)&iphdr;
+    for (int i = 0; i < iphdr.ihl; i++) {
+        csum += *ptr;
+        ptr++;
+    }
+    csum = (csum & 0xffff) + (csum >> 16);
+    return (uint16_t)~csum;
+}
+
 int main(int argc, char *argv[]) {
     int exchange_socket;
     struct sockaddr_ll server_addr;
@@ -69,7 +80,7 @@ int main(int argc, char *argv[]) {
     packet.ip_header.frag_off = 0;
     packet.ip_header.ttl = 64;
     packet.ip_header.protocol = IPPROTO_UDP; // udp
-    packet.ip_header.check = 0; // система посчитает сама
+    packet.ip_header.check = checksum(packet.ip_header);
     inet_pton(AF_INET, "192.168.0.101", &(packet.ip_header.saddr));
     inet_pton(AF_INET, "192.168.0.104", &(packet.ip_header.daddr));
 
