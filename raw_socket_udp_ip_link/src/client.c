@@ -20,10 +20,10 @@ struct Packet {
     char mes[256];
 };
 
-uint16_t checksum(struct iphdr iphdr) {
+uint16_t checksum(struct iphdr iphdr) { // чек сумма неверно считалась
     int csum = 0;
-    int *ptr = (int *)&iphdr;
-    for (int i = 0; i < iphdr.ihl; i++) {
+    short *ptr = (short *)&iphdr; // short *
+    for (int i = 0; i < iphdr.ihl * 2; i++) {
         csum += *ptr;
         ptr++;
     }
